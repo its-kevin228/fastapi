@@ -3,8 +3,13 @@ from typing import Optional
 from pydantic import BaseModel
 
 app = FastAPI()
+class coordIn(BaseModel):
+    password : str
+    lat: float
+    long: float
+    zoom: Optional[int]
 
-class coord(BaseModel):
+class coordOut(BaseModel):
     lat: float
     long: float
     zoom: Optional[int]
@@ -16,9 +21,9 @@ def helloword():
 
 # post
 
-@app.post('/coordonee/{propo}')
-async def position(propo:int,coord : coord):
-    return {'propo':propo,'location': coord.dic()}
+@app.post('/coordonee/',response_model=coordOut)
+async def position(coord : coordIn):
+    return coord
 
 # put
 
