@@ -1,5 +1,5 @@
 from fastapi import FastAPI,HTTPException
-from pydantic import BaseModel,
+from pydantic import BaseModel
 from typing import Optional
 
 app = FastAPI(title='todo_app', version="v1.0")
@@ -34,9 +34,19 @@ async def ajoutertodo(todo: Todo):
     return todo
 
 @app.put('/todo/{id}')
-async def update(id: int, todo: Todo):
+async def update(id: int, new_todo: Todo):
     try:
-        store_task[id] = todo
-        return todo
+        store_task[id] = new_todo
+        return store_task[id]
+    except:
+        raise HTTPException(status_code = 404, detail='Task not found in database')
+    
+
+@app.delete('/todo/{id}')
+async def delete_task(id: int):
+    try:
+        obj = store_task[id]
+        store_task.pop(id)
+        return obj
     except:
         raise HTTPException(status_code = 404, detail='Task not found in database')
